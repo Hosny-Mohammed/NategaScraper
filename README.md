@@ -1,84 +1,59 @@
-# NategaScraper
+# Egyptian Technical Diploma Results Scraper
 
-NategaScraper is a tool designed for scraping results from the Egyptian results website (natega) or similar educational results portals. The project provides an automated way to fetch, parse, and process publicly available exam results, making it easier for users to analyze and archive student result data.
+This Python script, `NategaScraper.py`, is designed to scrape the results of Egyptian technical diploma students from the official results website (`nategafany.emis.gov.eg`). It iterates through a range of seat numbers provided by the user, extracts the results for each student, and saves the collected data into a CSV file named `grades.csv`.
 
-## Features
+## How It Works
 
-- **Automated scraping** of results from natega websites.
-- **Configurable**: Easily adjust scraping targets, exam years, and other parameters.
-- **Data extraction**: Parses HTML pages and extracts relevant student data.
-- **Output options**: Save results in various formats (e.g., CSV, JSON).
-- **Error handling**: Handles common website errors, retries, and rate limits.
-- **Extensible**: Easily add support for new result pages or regions.
+The script performs the following actions:
+1.  **Establishes a Session:** It initiates a session with the results website to maintain cookie persistence.
+2.  **Retrieves Security Token:** It fetches a `__RequestVerificationToken` from the website's homepage. This token is crucial for authenticating subsequent POST requests.
+3.  **User Input:** It prompts the user to enter a starting and an ending seat number.
+4.  **Iterative Scraping:** It loops through each seat number in the specified range. For each number, it sends a POST request containing the seat number and the security token to retrieve the student's results.
+5.  **Data Parsing:** It uses BeautifulSoup to parse the HTML response and extract the student's information, such as their name, school, and grades for each subject.
+6.  **Error Handling:** If a seat number is invalid or if there's an issue with the request, the script records the error and continues to the next seat number.
+7.  **CSV Export:** After processing all the seat numbers, it compiles all the collected data and saves it into a `grades.csv` file, with appropriate headers for each piece of information.
 
-## Getting Started
+## How to Use
 
-### Prerequisites
+To use this script, follow these steps:
 
-- Python 3.x
-- `requests` library
-- `beautifulsoup4` library
-- (Optional) Other dependencies as required by your implementation
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Usage
-
-1. Clone the repository:
+1.  **Install Dependencies:** Make sure you have the required Python libraries installed. You can install them using pip:
     ```bash
-    git clone https://github.com/Hosny-Mohammed/NategaScraper.git
-    cd NategaScraper
+    pip install requests beautifulsoup4
     ```
 
-2. Configure your target settings (e.g., exam year, governorate, school code). Check the configuration section or the script's top for variables to edit.
-
-3. Run the scraper:
+2.  **Run the Script:** Execute the script from your terminal:
     ```bash
-    python natega_scraper.py
+    python NategaScraper.py
     ```
 
-4. Scraped data will be saved to the output file specified in the script or configuration.
+3.  **Enter Seat Numbers:** When prompted, enter the starting and ending seat numbers for the range of students you want to look up.
 
-### Example
+    ```
+    Enter the start seat number: 1001
+    Enter the end seat number: 1050
+    ```
 
-```bash
-python natega_scraper.py --year 2024 --governorate cairo --output results_2024_cairo.csv
-```
+4.  **Check the Output:** Once the script finishes, you will find a `grades.csv` file in the same directory. This file will contain the scraped results for all the seat numbers in the range you provided.
 
-## Configuration
+## Dependencies
 
-You can configure the scraper by editing variables in the script or passing command-line arguments (if supported).
+This script relies on the following Python libraries:
 
-- `year`: Exam year to scrape.
-- `governorate`: The region or governorate.
-- `output`: Output filename and format.
-- Other options as documented in the code.
+* `requests`: For making HTTP requests to the website.
+* `beautifulsoup4`: For parsing the HTML content of the web pages.
+* `csv`: For writing the scraped data into a CSV file (this is a standard library and does not need to be installed separately).
 
-## Contributing
+## Output File: `grades.csv`
 
-Contributions are welcome! Please open issues or submit pull requests for new features, bug fixes, or improvements.
+The script will generate a `grades.csv` file. This file will contain the results, with each row corresponding to a single student's record. The columns will include:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Open a pull request
+* Seat Number
+* Student Name (اسم الطالب)
+* School (المدرسة)
+* Specialization (التخصص)
+* Total Grade (المجموع الكلى)
+* And individual columns for each subject's grade.
 
-## License
-
-This project is licensed under the MIT License.
-
-## Disclaimer
-
-This tool is intended for educational and non-commercial use. Ensure that you have the right to access and process the data you scrape, and respect the target website's terms of service.
-
-## Contact
-
-For questions, suggestions, or support, please open an issue on this repository.
-
----
-Happy scraping!
+If an error occurred for a specific seat number (e.g., the seat number does not exist), the "Error" column will contain a description of the issue.
+            
